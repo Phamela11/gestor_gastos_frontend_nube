@@ -180,7 +180,9 @@ const Reporte = () => {
                     </p>
                   </div>
                   <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-emerald-100 text-emerald-700">
-                    ↗
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M4 12L14 2L14 7H20V17H14V22L4 12Z" fill="#059669"/>
+                    </svg>
                   </span>
                 </div>
               </div>
@@ -194,7 +196,9 @@ const Reporte = () => {
                     </p>
                   </div>
                   <span className="inline-flex items-center justify-center h-10 w-10 rounded-full bg-red-100 text-red-700">
-                    ↘
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M20 12L10 22V17H4V7H10V2L20 12Z" fill="#B91C1C"/>
+                    </svg>
                   </span>
                 </div>
               </div>

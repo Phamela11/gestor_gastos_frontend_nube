@@ -13,10 +13,45 @@ const Login = () => {
     toggleModo,
     handleLogin,
     handleRegister,
+    mostrarModalExito,
+    cerrarModalYVolverALogin,
   } = useLogin();
 
   return (
     <div className="h-screen flex bg-black">
+      {/* Modal de Registro Exitoso */}
+      {mostrarModalExito && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-12 rounded-2xl w-[400px] text-center text-white">
+            <div className="mb-6">
+              <svg
+                className="w-16 h-16 mx-auto text-green-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold mb-2">¡Registro Exitoso!</h2>
+            <p className="text-gray-300 mb-8">
+              Tu cuenta ha sido creada correctamente. Por favor, inicia sesión con tus credenciales.
+            </p>
+            <button
+              onClick={cerrarModalYVolverALogin}
+              className="w-full bg-pink-600 text-white p-3 rounded-lg hover:bg-pink-500 transition-colors font-semibold"
+            >
+              Volver al Inicio de Sesión
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Sección izquierda - Login / Registro */}
       <div className="w-[45%] flex items-center justify-center p-8">
         <div className="flex flex-col bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-8 rounded-2xl w-[500px] gap-3 text-white">
@@ -98,7 +133,6 @@ const Login = () => {
         </div>
       </div>
     );
-  };
-  
+};
+
 export default Login;
-  

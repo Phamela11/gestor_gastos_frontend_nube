@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { API } from "../../config/apiConfig";
 
-const API_URL = "http://localhost:3000/api/categorias";
+const API_URL = `${API}/api/categorias`;
 
 export interface Categoria {
   id_categoria: number;
@@ -53,8 +54,8 @@ export const useCategoria = (idUsuario: number | null) => {
       } else {
         throw new Error(data.message || "Error al obtener categorías");
       }
-    } catch (err: any) {
-      const errorMessage = err.message || "Error al obtener categorías";
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error al obtener categorías";
       setError(errorMessage);
       console.error("Error al obtener categorías:", err);
     } finally {
@@ -91,8 +92,8 @@ export const useCategoria = (idUsuario: number | null) => {
       const data = await response.json();
       await obtenerCategorias(); // Recargar categorías
       return data.categoria;
-    } catch (err: any) {
-      const errorMessage = err.message || "Error al crear categoría";
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error al crear categoría";
       setError(errorMessage);
       throw err;
     } finally {
@@ -132,8 +133,8 @@ export const useCategoria = (idUsuario: number | null) => {
       const data = await response.json();
       await obtenerCategorias(); // Recargar categorías
       return data.categoria;
-    } catch (err: any) {
-      const errorMessage = err.message || "Error al actualizar categoría";
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error al actualizar categoría";
       setError(errorMessage);
       throw err;
     } finally {
@@ -173,8 +174,8 @@ export const useCategoria = (idUsuario: number | null) => {
       }
 
       await obtenerCategorias(); // Recargar categorías
-    } catch (err: any) {
-      const errorMessage = err.message || "Error al eliminar categoría";
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error al eliminar categoría";
       setError(errorMessage);
       throw err;
     } finally {

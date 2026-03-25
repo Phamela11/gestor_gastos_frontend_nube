@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { API } from "../../config/apiConfig";
 
-const API_URL = "http://localhost:3000/api/transacciones";
+const API_URL = `${API}/api/transacciones`;
+
 
 export interface Transaccion {
   id_transaccion: number;
@@ -61,8 +63,8 @@ export const useTransaccion = (idUsuario: number | null) => {
       } else {
         throw new Error(data.message || "Error al obtener transacciones");
       }
-    } catch (err: any) {
-      const errorMessage = err.message || "Error al obtener transacciones";
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error al obtener transacciones";
       setError(errorMessage);
       console.error("Error al obtener transacciones:", err);
     } finally {
@@ -109,8 +111,8 @@ export const useTransaccion = (idUsuario: number | null) => {
         mensajePresupuesto: data.mensaje_presupuesto || null,
         idTransaccion: data.transaccion?.id_transaccion || null,
       };
-    } catch (err: any) {
-      const errorMessage = err.message || "Error al crear transacción";
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error al crear transacción";
       setError(errorMessage);
       throw err;
     } finally {
@@ -155,8 +157,8 @@ export const useTransaccion = (idUsuario: number | null) => {
       }
 
       await obtenerTransacciones();
-    } catch (err: any) {
-      const errorMessage = err.message || "Error al eliminar transacción";
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Error al eliminar transacción";
       setError(errorMessage);
       throw err;
     } finally {

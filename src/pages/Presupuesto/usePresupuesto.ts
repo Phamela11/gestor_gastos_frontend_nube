@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
+import { API } from "../../config/apiConfig";
 
-const API_URL = "http://localhost:3000/api/presupuestos";
+const API_URL = `${API}/api/presupuestos`;
 
 export interface Presupuesto {
   id_presupuesto: number;

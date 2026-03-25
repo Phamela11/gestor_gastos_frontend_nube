@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { API } from "../../config/apiConfig";
 
-const API_URL = "http://localhost:3000/api/notas";
+const API_URL = `${API}/api/notas`;
 
 export interface Nota {
   id_nota: number;

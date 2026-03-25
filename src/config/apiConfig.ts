@@ -1,0 +1,1 @@
+export const API: string = "https://gestorgastosbackendnube-production.up.railway.app";
