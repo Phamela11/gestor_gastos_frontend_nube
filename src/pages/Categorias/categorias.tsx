@@ -109,6 +109,20 @@ const Categorias = () => {
       return;
     }
 
+    const nombreNormalized = categoriaData.nombre_categoria.trim().toLowerCase();
+    const existe = categorias.some((c) => {
+      const mismoNombre = c.nombre_categoria.trim().toLowerCase() === nombreNormalized;
+      const esMismaCategoria = categoriaEditando
+        ? c.id_categoria === categoriaEditando.id_categoria
+        : false;
+      return mismoNombre && !esMismaCategoria;
+    });
+
+    if (existe) {
+      alert("Ya existe una categoría con este nombre. Por favor usa otro nombre.");
+      return;
+    }
+
     try {
       if (categoriaEditando) {
         await actualizarCategoria(categoriaEditando.id_categoria, {

@@ -26,6 +26,8 @@ interface AddNotaProps {
   mode?: "create" | "edit";
   initialData?: Partial<NotaFormData>;
   transacciones: TransaccionOption[];
+  notas: Array<{ id_nota: number; id_transaccion: number | null }>;
+  notaEditandoId?: number | null;
 }
 
 const formatFecha = (fechaStr?: string) => {
@@ -46,6 +48,8 @@ const AddNota = ({
   mode = "create",
   initialData,
   transacciones,
+  notas,
+  notaEditandoId,
 }: AddNotaProps) => {
   const [titulo, setTitulo] = useState("");
   const [contenido, setContenido] = useState("");
@@ -73,9 +77,29 @@ const AddNota = ({
     initialData?.color,
   ]);
 
+  const transaccionAsignadaIds = useMemo(() => {
+    const set = new Set<number>();
+    for (const nota of notas) {
+      if (
+        nota.id_transaccion != null &&
+        nota.id_nota !== (notaEditandoId ?? -1)
+      ) {
+        set.add(nota.id_transaccion);
+      }
+    }
+    return set;
+  }, [notas, notaEditandoId]);
+
   const transaccionesFiltradas = useMemo(() => {
     return transacciones.filter((t) => t.tipo === tipo);
   }, [transacciones, tipo]);
+
+  const transaccionesDisponibles = useMemo(() => {
+    return transaccionesFiltradas.filter((t) => {
+      const isAssigned = transaccionAsignadaIds.has(t.id_transaccion);
+      return !isAssigned || t.id_transaccion === idTransaccion;
+    });
+  }, [transaccionesFiltradas, transaccionAsignadaIds, idTransaccion]);
 
   const selectedTransaccion = useMemo(() => {
     if (idTransaccion === "") return null;
@@ -86,15 +110,16 @@ const AddNota = ({
 
   const transaccionesParaPicker = useMemo(() => {
     const q = pickerSearch.trim().toLowerCase();
-    if (!q) return transaccionesFiltradas;
+    const source = transaccionesDisponibles;
+    if (!q) return source;
 
-    return transaccionesFiltradas.filter((t) => {
+    return source.filter((t) => {
       const text = `${formatFecha(t.fecha_registro)} ${t.nombre_categoria ?? ""} ${String(
         t.monto
       )} ${t.descripcion ?? ""}`.toLowerCase();
       return text.includes(q);
     });
-  }, [pickerSearch, transaccionesFiltradas]);
+  }, [pickerSearch, transaccionesDisponibles]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -277,7 +302,7 @@ const AddNota = ({
                   </button>
                 </div>
                 <div className="text-xs text-gray-400">
-                  {transaccionesFiltradas.length} disponibles
+                  {transaccionesDisponibles.length} disponibles (no se puede seleccionar una transacción ya vinculada a otra nota)
                 </div>
               </div>
             </div>

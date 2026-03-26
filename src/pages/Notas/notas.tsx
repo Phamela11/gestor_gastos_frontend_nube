@@ -334,6 +334,8 @@ const Notas = () => {
         onClose={handleCerrarModal}
         onSubmit={handleSubmitNota}
         transacciones={transacciones}
+        notas={notas}
+        notaEditandoId={notaEditando?.id_nota ?? null}
         mode={notaEditando ? "edit" : "create"}
         initialData={
           notaEditando
