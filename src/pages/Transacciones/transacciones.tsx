@@ -66,9 +66,11 @@ const Transacciones = () => {
     idTransaccion: number;
     datos: TransaccionFormData;
   } | null>(null);
-  const [categoriaColors, setCategoriaColors] = useState<Record<number, string>>(
-    {}
-  );
+  const [categoriaColors, setCategoriaColors] = useState<Record<number, string>>({});
+
+  const [filtroTipo, setFiltroTipo] = useState<"todos" | "ingreso" | "gasto">("todos");
+  const [filtroCategoria, setFiltroCategoria] = useState<number | "todos">("todos");
+  const [busqueda, setBusqueda] = useState("");
 
   useEffect(() => {
     const usuarioStr = localStorage.getItem("usuario");
@@ -128,6 +130,29 @@ const Transacciones = () => {
     if (guardado) return guardado;
     return obtenerColorBase(index);
   };
+
+  const transaccionesFiltradas = transacciones.filter((t) => {
+    const tipo = getTipoTransaccion(t);
+
+    if (filtroTipo !== "todos" && tipo !== filtroTipo) {
+      return false;
+    }
+
+    if (filtroCategoria !== "todos" && t.id_categoria !== filtroCategoria) {
+      return false;
+    }
+
+    const textoBusqueda = busqueda.trim().toLowerCase();
+    if (textoBusqueda) {
+      const nombreCat = getNombreCategoria(t).toLowerCase();
+      const descripcion = (t.descripcion ?? "").toLowerCase();
+      if (!nombreCat.includes(textoBusqueda) && !descripcion.includes(textoBusqueda)) {
+        return false;
+      }
+    }
+
+    return true;
+  });
 
   const handleAbrirModal = () => {
     if (!idUsuario) {
@@ -251,6 +276,8 @@ const Transacciones = () => {
             </span>
             <input
               placeholder="Buscar transacciones..."
+              value={busqueda}
+              onChange={(e) => setBusqueda(e.target.value)}
               className="w-full bg-white border border-gray-300 rounded-lg pl-11 pr-4 py-3 text-sm text-gray-900 placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
             />
           </div>
@@ -278,18 +305,31 @@ const Transacciones = () => {
           </button>
 
           <div className="flex items-center gap-3">
-            <select className="h-11 bg-white border border-gray-300 rounded-lg px-4 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500/50">
-              <option>Todos</option>
-              <option>Ingresos</option>
-              <option>Gastos</option>
+            <select
+              value={filtroTipo}
+              onChange={(e) => setFiltroTipo(e.target.value as "todos" | "ingreso" | "gasto")}
+              className="h-11 bg-white border border-gray-300 rounded-lg px-4 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
+            >
+              <option value="todos">Todos</option>
+              <option value="ingreso">Ingresos</option>
+              <option value="gasto">Gastos</option>
             </select>
 
-            <select className="h-11 bg-white border border-gray-300 rounded-lg px-4 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500/50">
-              <option>Todas las categorias</option>
-              <option>Alimentación</option>
-              <option>Transporte</option>
-              <option>Vivienda</option>
-              <option>Salud</option>
+            <select
+              value={filtroCategoria}
+              onChange={(e) =>
+                setFiltroCategoria(
+                  e.target.value === "todos" ? "todos" : Number(e.target.value)
+                )
+              }
+              className="h-11 bg-white border border-gray-300 rounded-lg px-4 text-sm text-gray-700 focus:outline-none focus:ring-2 focus:ring-pink-500/50"
+            >
+              <option value="todos">Todas las categorias</option>
+              {categorias.map((categoria) => (
+                <option key={categoria.id_categoria} value={categoria.id_categoria}>
+                  {categoria.nombre_categoria}
+                </option>
+              ))}
             </select>
 
             <button
@@ -309,7 +349,7 @@ const Transacciones = () => {
               Historial de Transacciones
             </h2>
             <span className="text-sm text-gray-500">
-              ({transacciones.length} resultados)
+              ({transaccionesFiltradas.length} resultados)
             </span>
           </div>
 
@@ -333,7 +373,7 @@ const Transacciones = () => {
                 </thead>
 
                 <tbody>
-                  {transacciones.map((t, index) => {
+                  {transaccionesFiltradas.map((t, index) => {
                     const tipo = getTipoTransaccion(t);
                     const nombreCategoria = getNombreCategoria(t);
                     const colorCategoria = getColorCategoria(t, index);
