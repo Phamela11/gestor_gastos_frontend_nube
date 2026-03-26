@@ -15,6 +15,9 @@ const Login = () => {
     handleRegister,
     mostrarModalExito,
     cerrarModalYVolverALogin,
+    mostrarModalError,
+    mensajeError,
+    cerrarModalError,
   } = useLogin();
 
   return (
@@ -47,6 +50,39 @@ const Login = () => {
               className="w-full bg-pink-600 text-white p-3 rounded-lg hover:bg-pink-500 transition-colors font-semibold"
             >
               Volver al Inicio de Sesión
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Error */}
+      {mostrarModalError && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl p-12 rounded-2xl w-[400px] text-center text-white">
+            <div className="mb-6">
+              <svg
+                className="w-16 h-16 mx-auto text-red-400"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"
+                />
+              </svg>
+            </div>
+            <h2 className="text-3xl font-bold mb-2">Error</h2>
+            <p className="text-gray-300 mb-8">
+              {mensajeError}
+            </p>
+            <button
+              onClick={cerrarModalError}
+              className="w-full bg-red-600 text-white p-3 rounded-lg hover:bg-red-500 transition-colors font-semibold"
+            >
+              Cerrar
             </button>
           </div>
         </div>

@@ -9,6 +9,8 @@ export const useLogin = () => {
   const [correo, setCorreo] = useState("");
   const [contrasena, setContrasena] = useState("");
   const [mostrarModalExito, setMostrarModalExito] = useState(false);
+  const [mostrarModalError, setMostrarModalError] = useState(false);
+  const [mensajeError, setMensajeError] = useState("");
 
   const handleLogin = async () => {
     if (!correo || !contrasena) {
@@ -53,7 +55,15 @@ export const useLogin = () => {
 
   const handleRegister = async () => {
     if (!nombre || !correo || !contrasena) {
-      alert("Por favor, completa todos los campos");
+      setMensajeError("Por favor, completa todos los campos");
+      setMostrarModalError(true);
+      return;
+    }
+
+    // Validar que el correo contenga @
+    if (!correo.includes('@')) {
+      setMensajeError("El correo debe contener @");
+      setMostrarModalError(true);
       return;
     }
 
@@ -75,7 +85,8 @@ export const useLogin = () => {
           success: false,
           message: "Error en el servidor",
         }));
-        alert(errorData.message || "Error al registrar");
+        setMensajeError(errorData.message || "Error al registrar");
+        setMostrarModalError(true);
         return;
       }
 
@@ -88,17 +99,23 @@ export const useLogin = () => {
         setCorreo("");
         setContrasena("");
       } else {
-        alert(data.message || "Error al registrar");
+        setMensajeError(data.message || "Error al registrar");
+        setMostrarModalError(true);
       }
     } catch (error) {
       console.error("Error de registro:", error);
-      alert("Error de conexión. Por favor, verifica que el servidor esté corriendo.");
+      setMensajeError("Error de conexión. Por favor, verifica que el servidor esté corriendo.");
+      setMostrarModalError(true);
     }
   };
 
   const cerrarModalYVolverALogin = () => {
     setMostrarModalExito(false);
     setModoRegistro(false);
+  };
+
+  const cerrarModalError = () => {
+    setMostrarModalError(false);
   };
 
   const toggleModo = () => {
@@ -119,5 +136,8 @@ export const useLogin = () => {
     handleRegister,
     mostrarModalExito,
     cerrarModalYVolverALogin,
+    mostrarModalError,
+    mensajeError,
+    cerrarModalError,
   };
 };
